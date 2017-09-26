@@ -1,0 +1,24 @@
+Project Title
+Logs Analysis Project
+
+Getting Started
+Prerequisites:
+VMbox and vagrant
+
+Running the tests
+run the news_project_source_code.py in the VM machine
+
+Views design
+create view ok_browse as
+select date_trunc('day',time) as day, count(status) as num
+from log
+where status = '200 OK'
+group by day
+order by day;
+
+create view error_browse as
+select date_trunc('day',time) as day, count(status) as num
+from log
+where status = '404 NOT FOUND'
+group by day
+order by day;
