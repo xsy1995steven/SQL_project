@@ -14,6 +14,7 @@ def prob1():
     return c.fetchall()
     db.close()
 
+
 def prob2():
     db = psycopg2.connect(database=DBname)
     c = db.cursor()
@@ -25,6 +26,7 @@ def prob2():
               "order by num desc;")
     return c.fetchall()
     db.close()
+    
 
 def prob3():
     db = psycopg2.connect(database=DBname)
@@ -46,7 +48,8 @@ def prob3():
               "select ok_browse.day, float4(error_browse.num)/"
               "(float4(error_browse.num)+float4(ok_browse.num)) as rate"
               "from ok_browse, error_browse"
-              "where float4(error_browse.num)/(float4(error_browse.num)+float4(ok_browse.num))>0.01"
+              "where float4(error_browse.num)"
+              "/(float4(error_browse.num)+float4(ok_browse.num))>0.01"
               "and ok_browse.day=error_browse.day;")
     return c.fetchall()
     db.close()
