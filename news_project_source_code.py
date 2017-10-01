@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import psycopg2
 
 DBname = "news"
@@ -5,51 +6,51 @@ DBname = "news"
 def prob1():
     db = psycopg2.connect(database=DBname)
     c = db.cursor()
-    c.execute("select articles.title, count(*) as num"
-              "from articles join log"
-              "on log.path = '/article/' || articles.slug"
-              "group by articles.title"
-              "order by num desc"
-              "limit 3;")
-    return c.fetchall()
+    c.execute("SELECT articles.title, COUNT(*) AS num"
+              "FROM articles JOIN log"
+              "ON log.path = '/article/' || articles.slug"
+              "GROUP BY articles.title"
+              "ORDER BY NUM DESC"
+              "LIMIT 3;")
+    c.fetchall()
     db.close()
 
 
 def prob2():
     db = psycopg2.connect(database=DBname)
     c = db.cursor()
-    c.execute("select authors.name, count(*) as num"
-              "from authors, articles, log"
-              "where authors.id=articles.author"
+    c.execute("SELECT authors.name, COUNT(*) AS num"
+              "FROM authors, articles, log"
+              "WHERE authors.id=articles.author"
               "and log.path = '/article/' || articles.slug"
-              "group by authors.name"
-              "order by num desc;")
-    return c.fetchall()
+              "GROUP BY authors.name"
+              "ORDER BY NUM DESC;")
+    c.fetchall()
     db.close()
-    
+
 
 def prob3():
     db = psycopg2.connect(database=DBname)
     c = db.cursor()
-    c.execute("create view ok_browse as"
-              "select date_trunc('day',time) as day, count(status) as num"
-              "from log"
+    c.execute("CREATE VIEW ok_browse AS"
+              "SELECT date_trunc('day',time) AS day, COUNT(status) AS num"
+              "FROM log"
               "where status = '200 OK'"
-              "group by day"
-              "order by day;"
+              "GROUP BY day"
+              "ORDER BY day;"
 
-              "create view error_browse as"
-              "select date_trunc('day',time) as day, count(status) as num"
-              "from log"
+              "CREATE VIEW error_browse AS"
+              "SELECT date_trunc('day',time) AS day, COUNT(status) AS num"
+              "FROM log"
               "where status = '404 NOT FOUND'"
-              "group by day"
-              "order by day;"
+              "GROUP BY day"
+              "ORDER BY day;"
 
-              "select ok_browse.day, float4(error_browse.num)/"
-              "(float4(error_browse.num)+float4(ok_browse.num)) as rate"
-              "from ok_browse, error_browse"
+              "SELECT ok_browse.day, float4(error_browse.num)/"
+              "(float4(error_browse.num)+float4(ok_browse.num)) AS rate"
+              "FROM ok_browse, error_browse"
               "where float4(error_browse.num)"
               "/(float4(error_browse.num)+float4(ok_browse.num))>0.01"
               "and ok_browse.day=error_browse.day;")
-    return c.fetchall()
+    c.fetchall()
     db.close()
